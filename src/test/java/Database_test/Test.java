@@ -44,8 +44,8 @@ public class Test
       }
 	  
 	  System.out.println(employeeMap.get(resultSet));
-	
-	  
+	  System.out.println(employeeMap.get(resultSet));
+	  System.out.println(employeeMap.get(resultSet));
 	 
 	}
 }
