@@ -14,7 +14,7 @@ public class Test
 	public static void main(String[] args) throws SQLException 
 	{
 		
-	  Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/acharya_erp", "root", "root");
+	  Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/acharya_erp", "root", "arun1234");
 	  
 	    if (connection != null && !connection.isClosed())
 	    {
