@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    maven 'Maven 3.8.1' // Replace with the actual name you configured in Jenkins
+    maven 'Maven 3.8.3' // Replace with the actual name you configured in Jenkins
   }
 
   options {
