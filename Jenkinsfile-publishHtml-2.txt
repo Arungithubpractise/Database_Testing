@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    maven 'maven' // Make sure 'maven' matches your Jenkins Maven tool name
+    maven 'maven'
   }
 
   options {
@@ -13,7 +13,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'mvn clean install site surefire-report:report'
-        // Removed: sh 'tree'
+        archiveArtifacts artifacts: 'target/site/**', fingerprint: true
       }
     }
   }
@@ -22,13 +22,12 @@ pipeline {
     success {
       publishHTML([
         allowMissing: false, 
-        alwaysLinkToLastBuild: false, 
-        keepAll: false, 
+        alwaysLinkToLastBuild: true, 
+        keepAll: true, 
         reportDir: 'target/site', 
         reportFiles: 'surefire-report.html', 
-        reportName: 'Surefire Report', 
-        reportTitles: '', 
-        useWrapperFileDirectly: true
+        reportName: 'Surefire Report',
+        useWrapperFileDirectly: false
       ])
     }
   }
