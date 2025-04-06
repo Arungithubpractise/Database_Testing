@@ -1,34 +1,29 @@
 pipeline {
-  agent any
+    agent any
 
-  tools {
-    maven 'maven'
-  }
-
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-
-  stages {
-    stage('Build') {
-      steps {
-        sh 'mvn clean install site surefire-report:report'
-        archiveArtifacts artifacts: 'target/site/**', fingerprint: true
-      }
+    stages {
+        stage('Build and Test') {
+            steps {
+                // Clean and run tests, also generate HTML report
+                sh 'mvn clean verify'
+            }
+        }
     }
-  }
 
-  post {
-    success {
-      publishHTML([
-        allowMissing: false, 
-        alwaysLinkToLastBuild: true, 
-        keepAll: true, 
-        reportDir: 'target/site', 
-        reportFiles: 'surefire-report.html', 
-        reportName: 'Surefire Report',
-        useWrapperFileDirectly: false
-      ])
+    post {
+        always {
+            // Publish test result reports (JUnit XML)
+            junit '**/target/surefire-reports/*.xml'
+
+            // Publish pretty HTML report
+            publishHTML([
+                reportDir: 'target/site',
+                reportFiles: 'surefire-report.html',
+                reportName: 'Surefire HTML Report',
+                keepAll: true,
+                allowMissing: false,
+                alwaysLinkToLastBuild: true
+            ])
+        }
     }
-  }
 }
