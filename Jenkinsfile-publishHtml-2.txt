@@ -1,27 +1,43 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.8.6' // Change to your configured Maven version in Jenkins
+        jdk 'JDK 11'        // Or whatever version you're using
+    }
+
     stages {
-        stage('Build and Test') {
+        stage('Checkout') {
             steps {
-                // Clean and run tests, also generate HTML report
-                sh 'mvn clean verify'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
             }
         }
     }
 
     post {
         always {
-            // Publish test result reports (JUnit XML)
-            junit '**/target/surefire-reports/*.xml'
+            // Publish test results
+            junit 'target/surefire-reports/*.xml'
 
-            // Publish pretty HTML report
-            publishHTML([
-                reportDir: 'target/site',
-                reportFiles: 'surefire-report.html',
-                reportName: 'Surefire HTML Report',
-                keepAll: true,
-                allowMissing: false,
+            // (Optional) Publish HTML reports if you have them
+            // Make sure to generate an HTML report via plugin like Maven Surefire Report Plugin
+            publishHTML(target: [
+                reportName : 'JUnit Report',
+                reportDir  : 'target/site/surefire-report',
+                reportFiles: 'index.html',
+                keepAll    : true,
                 alwaysLinkToLastBuild: true
             ])
         }
